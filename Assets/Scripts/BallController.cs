@@ -10,6 +10,13 @@ public class BallController : MonoBehaviour
 
     private bool ignoreNextCollision;
 
+    private Vector3 startPosition;
+
+    private void Start()
+    {
+        startPosition = transform.position;
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
 
@@ -17,8 +24,14 @@ public class BallController : MonoBehaviour
         {
             return;
         }
+        //Se comenta esta linea por que ahora se da un punto al pasar de nivel
+        //GameManager.singleton.AddScore(1);
 
-        GameManager.singleton.AddScore(1);
+        DeathPart deathPart = collision.transform.GetComponent<DeathPart>();
+        if (deathPart)
+        {
+            GameManager.singleton.RestartLevel();
+        }
 
         rb.velocity = Vector3.zero;
         rb.AddForce(Vector3.up*impulseForce, ForceMode.Impulse);
@@ -31,6 +44,11 @@ public class BallController : MonoBehaviour
     private void AllowNextCollision()
     {
         ignoreNextCollision = false;
+    }
+
+    public void ResetBall()
+    {
+        transform.position = startPosition;
     }
 
 
