@@ -85,6 +85,42 @@ public class HelixController : MonoBehaviour
             level.transform.localPosition = new Vector3(0, spawmPosY, 0);
 
             spawnedLevels.Add(level);
+
+            int partsToDisable = 12-stage.Levels[i].partCount;
+
+            List<GameObject> disabledParts =  new List<GameObject>();
+
+            while (disabledParts.Count < partsToDisable)
+            {
+                GameObject randomPart = level.transform.GetChild(Random.Range(0, level.transform.childCount)).gameObject;
+                if (!disabledParts.Contains(randomPart))
+                {
+                    randomPart.SetActive(false);
+                    disabledParts.Add(randomPart);
+                }
+            }
+
+            List<GameObject>leftParts = new List<GameObject>();
+            foreach(Transform t in level.transform)
+            {
+                t.GetComponent<Renderer>().material.color=allStages[stageNumber].stageLevelPartColor;
+                if (t.gameObject.activeInHierarchy)
+                {
+                    leftParts.Add(t.gameObject);
+                }
+            }
+
+            List<GameObject> deathparts = new List<GameObject>();
+
+            while (deathparts.Count<stage.Levels[i].deathPartCount)
+            {
+                GameObject randomPart = leftParts[(Random.Range(0, leftParts.Count ))];
+                if (!deathparts.Contains(randomPart))
+                {
+                    randomPart.gameObject.AddComponent<DeathPart>();
+                    deathparts.Add(randomPart);
+                }
+            }
         }
     }
 }
